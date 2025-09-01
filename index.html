@@ -8,180 +8,247 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .invoice-container {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-radius: 8px;
+        }
+        
+        .invoice-header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .divider {
+            border-top: 1px solid #e2e8f0;
+            margin: 1.5rem 0;
+        }
+        
+        .section-title {
+            color: #4f46e5;
+            font-weight: 600;
+            border-bottom: 2px solid #4f46e5;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .billing-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .billing-table th {
+            background-color: #f1f5f9;
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .billing-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .total-row {
+            font-weight: 700;
+            background-color: #f8fafc;
+        }
+        
         @media print {
-            #invoice-form, #generate-btn, #download-btn, #reset-btn { display: none; }
-            #invoice-preview { display: block; }
+            #invoice-form, #generate-btn, #download-btn, #reset-btn { 
+                display: none; 
+            }
+            #invoice-preview { 
+                display: block; 
+                box-shadow: none;
+            }
+            body {
+                background: white;
+            }
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans min-h-screen">
-    <div class="max-w-6xl mx-auto p-6">
-        <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Professional Invoice Generator - Website Development Services</h1>
+<body class="bg-gray-50 min-h-screen py-8">
+    <div class="max-w-4xl mx-auto px-4">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">Professional Invoice Generator</h1>
 
         <!-- Invoice Form -->
-        <div id="invoice-form" class="bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 class="text-xl font-semibold mb-4 text-gray-700">Enter Invoice Details</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div id="invoice-form" class="invoice-container p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-6 text-gray-700 border-b pb-2">Enter Invoice Details</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-gray-600">Client Name</label>
-                    <input id="client-name" type="text" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Battaramulla Boutique Villa" value="Battaramulla Boutique Villa">
+                    <label class="block text-sm font-medium mb-2 text-gray-600">Client Name</label>
+                    <input id="client-name" type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Battaramulla Boutique Villa" value="Battaramulla Boutique Villa">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-gray-600">Invoice Number</label>
-                    <input id="invoice-number" type="text" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., 001" value="001">
+                    <label class="block text-sm font-medium mb-2 text-gray-600">Invoice Number</label>
+                    <input id="invoice-number" type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., 001" value="001">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-gray-600">Issue Date</label>
-                    <input id="issue-date" type="date" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <label class="block text-sm font-medium mb-2 text-gray-600">Issue Date</label>
+                    <input id="issue-date" type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-gray-600">Due Date</label>
-                    <input id="due-date" type="date" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <label class="block text-sm font-medium mb-2 text-gray-600">Due Date</label>
+                    <input id="due-date" type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-gray-600">Quotation Date</label>
-                    <input id="quotation-date" type="date" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <label class="block text-sm font-medium mb-2 text-gray-600">Quotation Date</label>
+                    <input id="quotation-date" type="date" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-gray-600">Currency</label>
-                    <select id="currency" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <label class="block text-sm font-medium mb-2 text-gray-600">Currency</label>
+                    <select id="currency" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="LKR" selected>LKR</option>
                         <option value="USD">USD</option>
                         <option value="EUR">EUR</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-gray-600">Total Website Cost</label>
-                    <input id="total-cost" type="number" step="0.01" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., 45000.00" value="45000.00">
+                    <label class="block text-sm font-medium mb-2 text-gray-600">Total Website Cost</label>
+                    <input id="total-cost" type="number" step="0.01" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., 45000.00" value="45000.00">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-gray-600">Hosting Capacity</label>
-                    <input id="hosting-capacity" type="text" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., 1GB" value="1GB">
+                    <label class="block text-sm font-medium mb-2 text-gray-600">Hosting Capacity</label>
+                    <input id="hosting-capacity" type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., 1GB" value="1GB">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-gray-600">Domain Cost (optional)</label>
-                    <input id="domain-cost" type="number" step="0.01" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., 5000.00">
+                    <label class="block text-sm font-medium mb-2 text-gray-600">Domain Cost (optional)</label>
+                    <input id="domain-cost" type="number" step="0.01" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., 5000.00">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-gray-600">Contact Name</label>
-                    <input id="contact-name" type="text" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Nuwan Chandrasekara" value="Nuwan Chandrasekara">
+                    <label class="block text-sm font-medium mb-2 text-gray-600">Contact Name</label>
+                    <input id="contact-name" type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Nuwan Chandrasekara" value="Nuwan Chandrasekara">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-gray-600">Company Name</label>
-                    <input id="company-name" type="text" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Hoolix.Digital" value="Hoolix.Digital">
+                    <label class="block text-sm font-medium mb-2 text-gray-600">Company Name</label>
+                    <input id="company-name" type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Hoolix.Digital" value="Hoolix.Digital">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1 text-gray-600">Contact Phone</label>
-                    <input id="contact-phone" type="text" class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., 077 293 8630" value="077 293 8630">
+                    <label class="block text-sm font-medium mb-2 text-gray-600">Contact Phone</label>
+                    <input id="contact-phone" type="text" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., 077 293 8630" value="077 293 8630">
                 </div>
             </div>
 
             <!-- Billing Details Section -->
-            <div class="mt-6">
-                <h3 class="text-lg font-semibold mb-2 text-gray-700">Billing Details</h3>
-                <div id="billing-items-container" class="space-y-2">
-                    <div class="flex items-center space-x-2">
-                        <input type="text" class="billing-description w-2/3 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" value="First Installment (1/12 of Website Development and Design)">
-                        <input type="number" step="0.01" class="billing-amount w-1/3 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" value="3750.00">
-                        <button class="remove-billing ml-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 hidden"> - </button>
+            <div class="mb-6">
+                <h3 class="section-title">Billing Details</h3>
+                <div id="billing-items-container" class="space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <input type="text" class="billing-description flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="First Installment (1/12 of Website Development and Design)">
+                        <input type="number" step="0.01" class="billing-amount w-1/4 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="3750.00">
+                        <button class="remove-billing bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 hidden">Remove</button>
                     </div>
                 </div>
-                <button id="add-billing-item" class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">+ Add Billing Item</button>
+                <button id="add-billing-item" class="mt-3 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">+ Add Billing Item</button>
             </div>
 
             <!-- Payment Terms Section -->
-            <div class="mt-6">
-                <h3 class="text-lg font-semibold mb-2 text-gray-700">Payment Terms</h3>
-                <div id="payment-terms-container" class="space-y-2">
+            <div class="mb-6">
+                <h3 class="section-title">Payment Terms</h3>
+                <div id="payment-terms-container" class="space-y-3">
                     <div class="flex items-center">
-                        <input type="text" class="payment-term w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" value="Amount due: [Currency] [Amount Due], payable by [Due Date].">
-                        <button class="remove-term ml-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 hidden"> - </button>
+                        <input type="text" class="payment-term flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="Total amount due: [Currency] [Amount Due]">
+                        <button class="remove-term ml-3 bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 hidden">Remove</button>
                     </div>
                 </div>
-                <button id="add-payment-term" class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">+ Add Payment Term</button>
+                <button id="add-payment-term" class="mt-3 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">+ Add Payment Term</button>
             </div>
 
             <!-- Services Reference Section -->
-            <div class="mt-6">
-                <h3 class="text-lg font-semibold mb-2 text-gray-700">Services Reference</h3>
-                <div id="services-container" class="space-y-2">
+            <div class="mb-6">
+                <h3 class="section-title">Services Reference</h3>
+                <div id="services-container" class="space-y-3">
                     <div class="flex items-center">
-                        <input type="text" class="service-item w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" value="Custom website design and development.">
-                        <button class="remove-service ml-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 hidden"> - </button>
+                        <input type="text" class="service-item flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value="Custom Website Design & Development">
+                        <button class="remove-service ml-3 bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 hidden">Remove</button>
                     </div>
                 </div>
-                <button id="add-service" class="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">+ Add Service</button>
+                <button id="add-service" class="mt-3 bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">+ Add Service</button>
             </div>
 
-            <div class="mt-6 flex space-x-2">
-                <button id="generate-btn" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Generate Invoice</button>
-                <button id="download-btn" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 hidden">Download as PDF</button>
-                <button id="reset-btn" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Reset Form</button>
+            <div class="flex space-x-3 pt-4 border-t border-gray-200">
+                <button id="generate-btn" class="bg-blue-500 text-white px-5 py-2.5 rounded-lg hover:bg-blue-600">Generate Invoice</button>
+                <button id="download-btn" class="bg-green-500 text-white px-5 py-2.5 rounded-lg hover:bg-green-600 hidden">Download as PDF</button>
+                <button id="reset-btn" class="bg-gray-500 text-white px-5 py-2.5 rounded-lg hover:bg-gray-600">Reset Form</button>
             </div>
         </div>
 
         <!-- Invoice Preview -->
-        <div id="invoice-preview" class="bg-white p-6 rounded-lg shadow-md hidden">
-            <header class="flex justify-between items-center mb-6">
+        <div id="invoice-preview" class="invoice-container p-8 hidden">
+            <div class="invoice-header p-6 mb-6">
+                <h1 class="text-3xl font-bold text-center">INVOICE</h1>
+                <p class="text-center text-blue-100 mt-2"># <span id="preview-invoice-number"></span></p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-800">Invoice #<span id="preview-invoice-number"></span></h1>
-                    <p class="text-lg text-gray-600"><span id="preview-client-name"></span></p>
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Billed To</h3>
+                    <p class="text-gray-800 font-medium"><span id="preview-client-name"></span></p>
                 </div>
-                <div class="text-right text-gray-600">
-                    <p>Date: <span id="preview-issue-date"></span></p>
-                    <p>Due Date: <span id="preview-due-date"></span></p>
+                <div class="text-right">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">From</h3>
+                    <p class="text-gray-800 font-medium"><span id="preview-company-name"></span></p>
+                    <p class="text-gray-600"><span id="preview-contact-name"></span></p>
+                    <p class="text-gray-600">Phone: <span id="preview-contact-phone"></span></p>
                 </div>
-            </header>
-
-            <section class="mb-6">
-                <h2 class="text-xl font-semibold mb-2 text-gray-700">Invoice Details</h2>
-                <p class="text-gray-600">This invoice is issued for the services outlined for <span id="preview-client-name-details"></span>, as per the quotation dated <span id="preview-quotation-date"></span>.</p>
-            </section>
-
-            <section class="mb-6">
-                <h2 class="text-xl font-semibold mb-2 text-gray-700">Billing Details</h2>
-                <table class="w-full border-collapse">
-                    <thead>
-                        <tr class="bg-gray-200">
-                            <th class="border p-2 text-left text-gray-700">Description</th>
-                            <th class="border p-2 text-right text-gray-700">Amount (<span id="preview-currency"></span>)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="preview-billing-items"></tbody>
-                    <tr id="domain-cost-row" class="hidden">
-                        <td class="border p-2 text-gray-600">Domain Registration (1 Year)</td>
-                        <td class="border p-2 text-right text-gray-600"><span id="preview-domain-cost"></span></td>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <p class="text-gray-600">Issue Date: <span id="preview-issue-date" class="text-gray-800 font-medium"></span></p>
+                </div>
+                <div class="text-right">
+                    <p class="text-gray-600">Due Date: <span id="preview-due-date" class="text-gray-800 font-medium"></span></p>
+                </div>
+            </div>
+            
+            <div class="divider"></div>
+            
+            <p class="text-gray-600 mb-6">This invoice is for services as per the quotation provided on <span id="preview-quotation-date" class="text-gray-800 font-medium"></span>.</p>
+            
+            <h3 class="section-title mb-4">Billing Details</h3>
+            <table class="billing-table mb-6">
+                <thead>
+                    <tr>
+                        <th class="w-3/4">Description</th>
+                        <th class="text-right">Amount (<span id="preview-currency"></span>)</th>
                     </tr>
-                    <tr class="font-bold">
-                        <td class="border p-2 text-gray-700">Total Due</td>
-                        <td class="border p-2 text-right text-gray-700"><span id="preview-total-due"></span></td>
-                    </tr>
-                </table>
-            </section>
-
-            <section class="mb-6">
-                <h2 class="text-xl font-semibold mb-2 text-gray-700">Payment Terms</h2>
-                <ul id="preview-payment-terms" class="list-disc pl-5 text-gray-600"></ul>
-            </section>
-
-            <section class="mb-6">
-                <h2 class="text-xl font-semibold mb-2 text-gray-700">Services Reference</h2>
-                <p class="text-gray-600">This invoice pertains to the website development and hosting services outlined in the quotation, including:</p>
-                <ul id="preview-services" class="list-disc pl-5 text-gray-600"></ul>
-            </section>
-
-            <section class="mb-6">
-                <h2 class="text-xl font-semibold mb-2 text-gray-700">Contact Information</h2>
-                <p class="text-gray-600">For any queries or to confirm payment, please contact:</p>
-                <p class="text-gray-600"><span id="preview-contact-name"></span><br>
-                <span id="preview-company-name"></span><br>
-                Phone: <span id="preview-contact-phone"></span></p>
-            </section>
-
-            <footer class="text-center text-gray-600">
-                <p>Thank you for your business. We look forward to delivering a high-quality website for <span id="preview-client-name-footer"></span>.</p>
-                <p class="mt-4">Sincerely,<br><span id="preview-contact-name-footer"></span>,<br><span id="preview-company-name-footer"></span>.</p>
-            </footer>
+                </thead>
+                <tbody id="preview-billing-items">
+                </tbody>
+                <tr id="domain-cost-row" class="hidden">
+                    <td>Domain Registration (1 Year)</td>
+                    <td class="text-right"><span id="preview-domain-cost"></span></td>
+                </tr>
+                <tr class="total-row">
+                    <td class="font-bold">Total Due</td>
+                    <td class="text-right font-bold"><span id="preview-total-due"></span></td>
+                </tr>
+            </table>
+            
+            <h3 class="section-title mb-4">Payment Terms</h3>
+            <ul id="preview-payment-terms" class="list-disc pl-5 text-gray-600 mb-6 space-y-2">
+            </ul>
+            
+            <h3 class="section-title mb-4">Services Reference</h3>
+            <ul id="preview-services" class="list-disc pl-5 text-gray-600 mb-6 space-y-2">
+            </ul>
+            
+            <div class="divider"></div>
+            
+            <div class="text-center pt-4">
+                <p class="text-gray-600">Thank you for your business!</p>
+            </div>
         </div>
     </div>
 
@@ -228,19 +295,19 @@
         // Function to add a new billing item
         function addBillingItem(description = '', amount = '') {
             const div = document.createElement('div');
-            div.classList.add('flex', 'items-center', 'space-x-2');
+            div.classList.add('flex', 'items-center', 'space-x-3');
             const descInput = document.createElement('input');
             descInput.type = 'text';
-            descInput.classList.add('billing-description', 'w-2/3', 'p-2', 'border', 'rounded', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500');
+            descInput.classList.add('billing-description', 'flex-grow', 'p-3', 'border', 'border-gray-300', 'rounded-lg', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500');
             descInput.value = description;
             const amountInput = document.createElement('input');
             amountInput.type = 'number';
             amountInput.step = '0.01';
-            amountInput.classList.add('billing-amount', 'w-1/3', 'p-2', 'border', 'rounded', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500');
+            amountInput.classList.add('billing-amount', 'w-1/4', 'p-3', 'border', 'border-gray-300', 'rounded-lg', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500');
             amountInput.value = amount;
             const removeBtn = document.createElement('button');
-            removeBtn.classList.add('remove-billing', 'ml-2', 'bg-red-500', 'text-white', 'px-2', 'py-1', 'rounded', 'hover:bg-red-600');
-            removeBtn.textContent = ' - ';
+            removeBtn.classList.add('remove-billing', 'bg-red-500', 'text-white', 'px-3', 'py-2', 'rounded-lg', 'hover:bg-red-600');
+            removeBtn.textContent = 'Remove';
             removeBtn.addEventListener('click', () => {
                 if (form.billingItemsContainer.children.length > 1) {
                     div.remove();
@@ -260,11 +327,11 @@
             div.classList.add('flex', 'items-center');
             const input = document.createElement('input');
             input.type = 'text';
-            input.classList.add('payment-term', 'w-full', 'p-2', 'border', 'rounded', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500');
+            input.classList.add('payment-term', 'flex-grow', 'p-3', 'border', 'border-gray-300', 'rounded-lg', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500');
             input.value = value;
             const removeBtn = document.createElement('button');
-            removeBtn.classList.add('remove-term', 'ml-2', 'bg-red-500', 'text-white', 'px-2', 'py-1', 'rounded', 'hover:bg-red-600');
-            removeBtn.textContent = ' - ';
+            removeBtn.classList.add('remove-term', 'ml-3', 'bg-red-500', 'text-white', 'px-3', 'py-2', 'rounded-lg', 'hover:bg-red-600');
+            removeBtn.textContent = 'Remove';
             removeBtn.addEventListener('click', () => {
                 if (form.paymentTermsContainer.children.length > 1) {
                     div.remove();
@@ -283,11 +350,11 @@
             div.classList.add('flex', 'items-center');
             const input = document.createElement('input');
             input.type = 'text';
-            input.classList.add('service-item', 'w-full', 'p-2', 'border', 'rounded', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500');
+            input.classList.add('service-item', 'flex-grow', 'p-3', 'border', 'border-gray-300', 'rounded-lg', 'focus:outline-none', 'focus:ring-2', 'focus:ring-blue-500');
             input.value = value;
             const removeBtn = document.createElement('button');
-            removeBtn.classList.add('remove-service', 'ml-2', 'bg-red-500', 'text-white', 'px-2', 'py-1', 'rounded', 'hover:bg-red-600');
-            removeBtn.textContent = ' - ';
+            removeBtn.classList.add('remove-service', 'ml-3', 'bg-red-500', 'text-white', 'px-3', 'py-2', 'rounded-lg', 'hover:bg-red-600');
+            removeBtn.textContent = 'Remove';
             removeBtn.addEventListener('click', () => {
                 if (form.servicesContainer.children.length > 1) {
                     div.remove();
@@ -310,12 +377,12 @@
 
         // Initial setup with default values
         addBillingItem('First Installment (1/12 of Website Development and Design)', '3750.00');
-        addPaymentTerm('Amount due: [Currency] [Amount Due], payable by [Due Date].');
-        addPaymentTerm('This is the first of 12 monthly installments for the total website development cost of [Currency] [Total Cost].');
-        addPaymentTerm('Payment methods: Bank transfer or cash. Please contact us for bank details.');
-        addService('Custom website design and development.');
-        addService('Free web hosting for 1 year with up to [Hosting Capacity] storage.');
-        addService('Ongoing technical support and maintenance.');
+        addPaymentTerm('Total amount due: [Currency] [Amount Due]');
+        addPaymentTerm('Total project cost: [Currency] [Total Cost].');
+        addPaymentTerm('Payment can be made via bank transfer.');
+        addService('Custom Website Design & Development');
+        addService('Free Hosting with [Hosting Capacity] Capacity');
+        addService('Technical Support & Maintenance');
 
         // Event listeners for adding new fields
         form.addBillingItemBtn.addEventListener('click', () => addBillingItem());
@@ -337,19 +404,22 @@
 
             document.getElementById('preview-invoice-number').textContent = form.invoiceNumber.value || '[Invoice Number]';
             document.getElementById('preview-client-name').textContent = form.clientName.value || '[Client Name]';
-            document.getElementById('preview-issue-date').textContent = form.issueDate.value || '[Issue Date]';
-            document.getElementById('preview-due-date').textContent = dueDate || '[Due Date]';
-            document.getElementById('preview-client-name-details').textContent = form.clientName.value || '[Client Name]';
-            document.getElementById('preview-quotation-date').textContent = form.quotationDate.value || '[Quotation Date]';
+            document.getElementById('preview-issue-date').textContent = formatDisplayDate(form.issueDate.value) || '[Issue Date]';
+            document.getElementById('preview-due-date').textContent = formatDisplayDate(dueDate) || '[Due Date]';
+            document.getElementById('preview-quotation-date').textContent = formatDisplayDate(form.quotationDate.value) || '[Quotation Date]';
             document.getElementById('preview-currency').textContent = currency;
             document.getElementById('preview-domain-cost').textContent = domainCost.toFixed(2);
             document.getElementById('preview-total-due').textContent = totalDue.toFixed(2);
             document.getElementById('preview-contact-name').textContent = form.contactName.value || '[Contact Name]';
             document.getElementById('preview-company-name').textContent = form.companyName.value || '[Company Name]';
             document.getElementById('preview-contact-phone').textContent = form.contactPhone.value || '[Contact Phone]';
-            document.getElementById('preview-client-name-footer').textContent = form.clientName.value || '[Client Name]';
-            document.getElementById('preview-contact-name-footer').textContent = form.contactName.value || '[Contact Name]';
-            document.getElementById('preview-company-name-footer').textContent = form.companyName.value || '[Company Name]';
+
+            // Format date for display (e.g., September 1, 2025)
+            function formatDisplayDate(dateString) {
+                if (!dateString) return '';
+                const date = new Date(dateString);
+                return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+            }
 
             // Populate billing items
             const billingItemsContainer = document.getElementById('preview-billing-items');
@@ -358,8 +428,8 @@
                 if (item.description.trim() && !isNaN(item.amount)) {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td class="border p-2 text-gray-600">${item.description}</td>
-                        <td class="border p-2 text-right text-gray-600">${item.amount.toFixed(2)}</td>
+                        <td>${item.description}</td>
+                        <td class="text-right">${item.amount.toFixed(2)}</td>
                     `;
                     billingItemsContainer.appendChild(tr);
                 }
@@ -377,7 +447,7 @@
                     const li = document.createElement('li');
                     let termText = input.value
                         .replace(/\[Amount Due\]/g, totalDue.toFixed(2))
-                        .replace(/\[Due Date\]/g, dueDate)
+                        .replace(/\[Due Date\]/g, formatDisplayDate(dueDate))
                         .replace(/\[Total Cost\]/g, totalCost.toFixed(2))
                         .replace(/\[Currency\]/g, currency)
                         .replace(/\[Hosting Capacity\]/g, hostingCapacity);
@@ -403,6 +473,9 @@
             // Show preview and download button
             document.getElementById('invoice-preview').classList.remove('hidden');
             form.downloadBtn.classList.remove('hidden');
+            
+            // Scroll to preview
+            document.getElementById('invoice-preview').scrollIntoView({ behavior: 'smooth' });
         }
 
         // Function to download as PDF using jsPDF and html2canvas
@@ -455,18 +528,21 @@
 
             // Reset payment terms
             form.paymentTermsContainer.innerHTML = '';
-            addPaymentTerm('Amount due: [Currency] [Amount Due], payable by [Due Date].');
-            addPaymentTerm('This is the first of 12 monthly installments for the total website development cost of [Currency] [Total Cost].');
-            addPaymentTerm('Payment methods: Bank transfer or cash. Please contact us for bank details.');
+            addPaymentTerm('Total amount due: [Currency] [Amount Due]');
+            addPaymentTerm('Total project cost: [Currency] [Total Cost].');
+            addPaymentTerm('Payment can be made via bank transfer.');
 
             // Reset services
             form.servicesContainer.innerHTML = '';
-            addService('Custom website design and development.');
-            addService('Free web hosting for 1 year with up to [Hosting Capacity] storage.');
-            addService('Ongoing technical support and maintenance.');
+            addService('Custom Website Design & Development');
+            addService('Free Hosting with [Hosting Capacity] Capacity');
+            addService('Technical Support & Maintenance');
 
             document.getElementById('invoice-preview').classList.add('hidden');
             form.downloadBtn.classList.add('hidden');
+            
+            // Scroll to form
+            document.getElementById('invoice-form').scrollIntoView({ behavior: 'smooth' });
         }
 
         // Event listeners
